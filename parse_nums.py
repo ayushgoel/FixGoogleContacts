@@ -10,6 +10,9 @@ def get_phone_fields(fields):
 def should_process_phone(phone):
   return phone.find(':::') == -1
 
+def match_phone_numbers(phone_str):
+  return [match.number for match in pn.PhoneNumberMatcher(phone_str, 'IN')]
+
 def phone_object_for_phone(phone):
   try:
     return pn.parse(phone)
@@ -18,17 +21,25 @@ def phone_object_for_phone(phone):
       return pn.parse(phone, 'IN')
     except pn.phonenumberutil.NumberParseException:
       print("Couldn't parse number", phone)
+      matched_phone_numbers = match_phone_numbers(phone)
+      if matched_phone_numbers:
+        return matched_phone_numbers
       return None
 
-def process(row, phone_fields):
-  phone_nums = [row[i] for i in phone_fields if row[i]]
+def boil_phone_numbers(phone_nums):
   for phone in phone_nums:
     ph = phone_object_for_phone(phone)
-    if ph:
+    if ph and isinstance(ph, list):
+      for i in ph:
+        print (phone, " -> ", pn.format_number(i, pn.PhoneNumberFormat.E164))
+    elif ph:
       print (phone, " -> ", pn.format_number(ph, pn.PhoneNumberFormat.E164))
     else:
       print ("Phone number couldn't be parsed")
 
+def process(row, phone_fields):
+  phone_nums = [row[i] for i in phone_fields if row[i]]
+  boil_phone_numbers(phone_nums)
 
 def start():
   with open('google.csv', encoding = 'UTF-16') as f:
