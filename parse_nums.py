@@ -39,21 +39,27 @@ def boil_phone_numbers(phone_nums):
       return None
 
 def process(row, phone_fields):
+  newrow = list(row)
   for i in phone_fields:
     if row[i]:
-      print(boil_phone_numbers([row[i]]))
+      newrow[i] = boil_phone_numbers([row[i]])
+      print(row[i], newrow[i])
+  return newrow
 #  phone_nums = [row[i] for i in phone_fields if row[i]]
 #  boiled_nums = boil_phone_numbers(phone_nums)
 
 def start():
-  with open('google.csv', encoding = 'UTF-16') as f:
-    formatted_data = csv.reader(f)
-    fields = next(formatted_data)
-    phone_fields = get_phone_fields(fields)
-    print(fields)
-    print(phone_fields)
-    for row in formatted_data:
-      process(row, phone_fields)
+  with open('google.csv', encoding = 'UTF-16') as rf:
+    with open('formatted_google.csv', 'w', encoding = 'UTF-16') as wf:
+      formatted_data = csv.reader(rf)
+      fields = next(formatted_data)
+      output_csv = csv.writer(wf, dialect = formatted_data.dialect)
+      phone_fields = get_phone_fields(fields)
+      print(fields)
+      print(phone_fields)
+      output_csv.writerow(fields)
+      for row in formatted_data:
+        output_csv.writerow(process(row, phone_fields))
 
 def main():
   if sys.version_info.major >= 3:
