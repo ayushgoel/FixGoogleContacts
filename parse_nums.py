@@ -30,16 +30,20 @@ def boil_phone_numbers(phone_nums):
   for phone in phone_nums:
     ph = phone_object_for_phone(phone)
     if ph and isinstance(ph, list):
-      for i in ph:
-        print (phone, " -> ", pn.format_number(i, pn.PhoneNumberFormat.E164))
+      #return [pn.format_number(i, pn.PhoneNumberFormat.E164) for i in ph]
+      return ' ::: '.join([pn.format_number(i, pn.PhoneNumberFormat.E164) for i in ph])
     elif ph:
-      print (phone, " -> ", pn.format_number(ph, pn.PhoneNumberFormat.E164))
+      return pn.format_number(ph, pn.PhoneNumberFormat.E164) 
     else:
-      print ("Phone number couldn't be parsed")
+      print ("Phone number couldn't be parsed", phone_nums)
+      return None
 
 def process(row, phone_fields):
-  phone_nums = [row[i] for i in phone_fields if row[i]]
-  boil_phone_numbers(phone_nums)
+  for i in phone_fields:
+    if row[i]:
+      print(boil_phone_numbers([row[i]]))
+#  phone_nums = [row[i] for i in phone_fields if row[i]]
+#  boiled_nums = boil_phone_numbers(phone_nums)
 
 def start():
   with open('google.csv', encoding = 'UTF-16') as f:
