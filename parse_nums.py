@@ -53,6 +53,9 @@ def process(row, phone_fields, country_code):
   return newrow
 
 def start(read_file_name, write_file_name, country_code):
+  assert(read_file_name)
+  if not write_file_name:
+    write_file_name = 'formatted_google.csv'
   with open(read_file_name, encoding = FILE_ENCODING) as rf:
     with open(write_file_name, 'w', encoding = FILE_ENCODING) as wf:
       formatted_data = csv.reader(rf)
@@ -78,8 +81,8 @@ def main():
   ## Use 'append' as action to take multiple files as input.
   ## Use 'nargs' on files to take file names optionally
   ## Can give choices on country code from phonenumbers.geocoder.LOCALE_DATA
-  parser.add_argument('-infile', default = sys.stdin.name, help = 'The name of the phonebook file downloaded from Google Contacts.')
-  parser.add_argument('-outfile', default = sys.stdout.name, help = 'The file name to write the output to. Output is written in csv format.')
+  parser.add_argument('-infile', help = 'The name of the phonebook file downloaded from Google Contacts.')
+  parser.add_argument('-outfile', help = 'The file name to write the output to. Output is written in csv format.')
   parser.add_argument('-cc', '--countrycode', default = 'IN', help = '(default : %(default)s). The preferred country to try to boil a phone number to. Get your ISO Country Code from here : http://en.wikipedia.org/wiki/ISO_3166-1_alpha-2#Decoding_table')
   args = parser.parse_args()
 
