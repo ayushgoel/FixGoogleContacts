@@ -35,7 +35,6 @@ def boil_phone_numbers(phone_nums):
   for phone in phone_nums:
     ph = phone_object_for_phone(phone)
     if ph and isinstance(ph, list):
-      #return [pn.format_number(i, pn.PhoneNumberFormat.E164) for i in ph]
       phone_separator = MULTIPLE_PHONE_SEPARATOR.center(len(MULTIPLE_PHONE_SEPARATOR) + 2, ' ') 
       return phone_separator.join([pn.format_number(i, pn.PhoneNumberFormat.E164) for i in ph])
     elif ph:
@@ -51,8 +50,6 @@ def process(row, phone_fields):
       newrow[i] = boil_phone_numbers([row[i]])
       print(row[i], newrow[i])
   return newrow
-#  phone_nums = [row[i] for i in phone_fields if row[i]]
-#  boiled_nums = boil_phone_numbers(phone_nums)
 
 def start():
   with open('google.csv', encoding = FILE_ENCODING) as rf:
