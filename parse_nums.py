@@ -3,6 +3,7 @@
 import csv
 import phonenumbers as pn
 import sys
+import argparse
 
 FIELD_PHONE = 'Phone'
 FIELD_PHONE_NUMBER = 'Value'
@@ -69,10 +70,20 @@ def main():
     print("Requires Python 3+ to work.")
     return
 
-  read_file = 'google.csv'
-  write_file = 'formatted_google.csv'
-  country_code = 'IN'
-  start(read_file, write_file, country_code)
+  # TODO : Add github url to `epilog`
+  parser = argparse.ArgumentParser(description = 'Format your Phone-Book', epilog = '')
+
+  parser.add_argument('--version', '-v', action = 'version', version = 'Version 0.1')
+  # All arguments are required.
+  ## Use 'append' as action to take multiple files as input.
+  ## Use 'nargs' on files to take file names optionally
+  ## Can give choices on country code from phonenumbers.geocoder.LOCALE_DATA
+  parser.add_argument('-infile', default = sys.stdin.name, help = 'The name of the phonebook file downloaded from Google Contacts.')
+  parser.add_argument('-outfile', default = sys.stdout.name, help = 'The file name to write the output to. Output is written in csv format.')
+  parser.add_argument('-cc', '--countrycode', default = 'IN', help = '(default : %(default)s). The preferred country to try to boil a phone number to. Get your ISO Country Code from here : http://en.wikipedia.org/wiki/ISO_3166-1_alpha-2#Decoding_table')
+  args = parser.parse_args()
+
+  start(args.infile, args.outfile, args.countrycode)
 
 main()
 
