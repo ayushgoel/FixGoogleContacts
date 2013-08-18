@@ -34,3 +34,9 @@ nosetests.xml
 .mr.developer.cfg
 .project
 .pydevproject
+
+# Mac
+.DS_Store
+
+# I/O CSV files
+.csv
