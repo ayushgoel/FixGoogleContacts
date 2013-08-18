@@ -66,6 +66,7 @@ def start(read_file_name, write_file_name, country_code):
 
 def main():
   if sys.version_info.major < 3:
+    print("Requires Python 3+ to work.")
     return
 
   read_file = 'google.csv'
