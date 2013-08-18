@@ -4,11 +4,16 @@ import csv
 import phonenumbers as pn
 import sys
 
+FIELD_PHONE = 'Phone'
+FIELD_PHONE_NUMBER = 'Value'
+MULTIPLE_PHONE_SEPARATOR = ':::'
+FILE_ENCODING = 'UTF-16'
+
 def get_phone_fields(fields):
-  return [fields.index(field) for field in fields if ((field.find('Phone') != -1) and (field.find('Value') != -1))]
+  return [fields.index(field) for field in fields if ((field.find(FIELD_PHONE) != -1) and (field.find(FIELD_PHONE_NUMBER) != -1))]
 
 def should_process_phone(phone):
-  return phone.find(':::') == -1
+  return phone.find(MULTIPLE_PHONE_SEPARATOR) == -1
 
 def match_phone_numbers(phone_str):
   return [match.number for match in pn.PhoneNumberMatcher(phone_str, 'IN')]
@@ -31,7 +36,8 @@ def boil_phone_numbers(phone_nums):
     ph = phone_object_for_phone(phone)
     if ph and isinstance(ph, list):
       #return [pn.format_number(i, pn.PhoneNumberFormat.E164) for i in ph]
-      return ' ::: '.join([pn.format_number(i, pn.PhoneNumberFormat.E164) for i in ph])
+      phone_separator = MULTIPLE_PHONE_SEPARATOR.center(len(MULTIPLE_PHONE_SEPARATOR) + 2, ' ') 
+      return phone_separator.join([pn.format_number(i, pn.PhoneNumberFormat.E164) for i in ph])
     elif ph:
       return pn.format_number(ph, pn.PhoneNumberFormat.E164) 
     else:
@@ -49,8 +55,8 @@ def process(row, phone_fields):
 #  boiled_nums = boil_phone_numbers(phone_nums)
 
 def start():
-  with open('google.csv', encoding = 'UTF-16') as rf:
-    with open('formatted_google.csv', 'w', encoding = 'UTF-16') as wf:
+  with open('google.csv', encoding = FILE_ENCODING) as rf:
+    with open('formatted_google.csv', 'w', encoding = FILE_ENCODING) as wf:
       formatted_data = csv.reader(rf)
       fields = next(formatted_data)
       output_csv = csv.writer(wf, dialect = formatted_data.dialect)
